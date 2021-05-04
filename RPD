@@ -1,0 +1,136 @@
+//Deixa a fita de Led Respirar atraves da medição de Millis
+#include <FastLED.h>
+
+#define NUM_LEDS 30
+#define LED_PIN 5
+#define LED_TYPE    WS2812
+
+unsigned long int respira = 0;
+int r = 0;
+int e = NUM_LEDS - 1;
+int estado = 0;
+
+CRGB leds[NUM_LEDS];
+
+void setup () {
+  FastLED.addLeds<LED_TYPE, LED_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.setBrightness(250);
+
+  }
+
+void loop() {
+ //int proximo = map(analogRead(A0),1023, 0, 1000, 10);
+//if(proximo <= 1000){
+  //estado = 1;
+//}
+  if(estado == 0){
+  Respirando(50, 50);
+  }
+  if(estado == 1){
+  Piscalerta(100,100);
+}
+if(estado == 2){
+  //trigged(proximo, proximo*0.7);
+  trigged(50,50);
+}
+}
+void Respirando( int inspira, int expira) {
+  if(r < NUM_LEDS){
+    if(millis() - respira >= inspira){
+      Arcoiris(r);
+      blur1d(leds, NUM_LEDS, 100);
+      FastLED.show();
+      respira += inspira;
+      r += 1;
+      }
+    }
+    if(r == NUM_LEDS){
+      if(millis() - respira >= expira){
+        leds[e] = CRGB::Black;
+        blur1d(leds, NUM_LEDS, 15);
+        FastLED.show();
+        respira += expira;
+        e -= 1;
+        }
+      }
+      if(r == NUM_LEDS and e == 0){
+        r = 0;
+        e = NUM_LEDS - 1;
+      }
+  } 
+//Engatilhado
+void Piscalerta( int inspira, int expira) {
+  if(r < NUM_LEDS){
+    if(millis() - respira >= inspira){
+      fill_solid( leds, NUM_LEDS, CRGB::Red);
+      FastLED.show();
+      respira += inspira;
+      r += 1;
+      }
+    if(millis() - respira >= expira){
+        FastLED.clear();
+        FastLED.show();
+        respira += expira;
+        e -= 1;
+      }
+    }
+    if(r == NUM_LEDS){
+      if(millis() - respira >= expira){
+        fill_solid( leds, NUM_LEDS, CRGB::Red);
+        FastLED.show();
+        respira += expira;
+        e -= 1;
+      }
+      }
+      if(r == NUM_LEDS and e == 0){
+      FastLED.clear();
+        FastLED.show();
+        e = NUM_LEDS - 1;
+        r = 0;
+        estado += 1;
+      }
+  }
+
+void trigged(int inspira, int expira){
+   if(r < NUM_LEDS){
+    if(millis() - respira >= inspira){
+      leds[r] = CRGB::Red;
+      FastLED.show();
+      respira += inspira;
+      r += 1;
+      }
+    }
+    if(r == NUM_LEDS){
+      if(millis() - respira >= expira){
+        leds[e] = CRGB::Black;
+        FastLED.show();
+        respira += expira;
+        e -= 1;
+        }
+      }
+      if(r == NUM_LEDS and e == 0){
+        r = 0;
+        e = NUM_LEDS - 1;
+      }
+  } 
+
+void Arcoiris(int r ){
+  int intervalo = NUM_LEDS/7;
+  if(r + 1 <= intervalo){
+    leds[r] = CRGB::CRGB::Violet;
+  }else if(r + 1 <= 2*intervalo){
+    leds[r] = CRGB::Indigo;
+  }else if(r + 1 <= 3*intervalo){
+      leds[r] = CRGB::Cyan;
+    }else if(r + 1 <= 4*intervalo){
+      leds[r] = CRGB::Green;
+    }else if (r + 1 <= 5*intervalo){
+      leds[r] = CRGB::Yellow;
+    }else if (r + 1 <= 6*intervalo){
+      leds[r] = CRGB::Orange;
+      }else if(r + 1 <= 7*intervalo){
+      leds[r] = CRGB::Red;
+     }else if( r + 1 >= 7*intervalo){
+       leds[r] = CRGB::Violet;
+     }
+}
