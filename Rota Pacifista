@@ -211,7 +211,7 @@ void pacifica_loop(uint8_t brg)
   pacifica_one_layer( pacifica_palette_1, sCIStart1, beatsin16( 3, 11 * 256, 14 * 256), brg, 0-beat16( 301) );
   pacifica_one_layer( pacifica_palette_2, sCIStart2, beatsin16( 4,  6 * 256,  9 * 256), brg, beat16( 401) );
   pacifica_one_layer( pacifica_palette_3, sCIStart3, 6 * 256, brg, 0-beat16(503));
-  pacifica_one_layer( pacifica_palette_3, sCIStart4, 5 * 256, brg, beat16(601));
+  pacifica_one_layer( currentPalette, sCIStart4, 5 * 256, brg, beat16(601));
 
   pacifica_add_whitecaps();
 
