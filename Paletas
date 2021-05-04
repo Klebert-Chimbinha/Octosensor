@@ -1,0 +1,80 @@
+#include <FastLED.h>
+
+#define LED_PIN     5
+#define NUM_LEDS    16
+#define BRIGHTNESS  255
+#define LED_TYPE    WS2812
+#define COLOR_ORDER GRB
+CRGB leds[NUM_LEDS];
+
+unsigned long int respira = 0;
+int i = 0;
+#define UPDATES_PER_SECOND 100
+
+
+CRGBPalette16 currentPalette;
+TBlendType    currentBlending;
+
+void setup() {
+  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.setBrightness(  BRIGHTNESS );
+
+  currentPalette = RainbowColors_p;
+  currentBlending = LINEARBLEND;
+}
+
+
+void loop()
+{
+  static uint8_t startIndex = 0;
+  startIndex = startIndex + 1000; 
+  
+  SetupArcoirisPalette();
+
+  FillLEDsFromPaletteColors( startIndex);
+  startIndex = startIndex + 1; 
+  FastLED.show();
+}
+
+void FillLEDsFromPaletteColors( uint8_t colorIndex)
+{
+  uint8_t brightness = 255;
+
+    if(millis() - respira >= 1000){
+    //leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
+    //i += 1;
+    fill_solid( leds, NUM_LEDS, ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending));
+    colorIndex += 1000;
+    respira += 1000;
+
+    if(i == NUM_LEDS){
+      i = 0;
+    }
+  }
+}
+
+// This function sets up a palette of purple and green stripes.
+void SetupArcoirisPalette()
+{
+ CRGB::Indigo;
+ CRGB::Cyan;
+ CRGB::Green;
+ CRGB::Yellow;
+ CRGB::Orange;
+ CRGB::Red;
+  CRGB violet = CHSV( HUE_PINK, 255, 255);
+  CRGB indigo = CHSV( HUE_PURPLE, 255, 255);
+  CRGB purple = CHSV( HUE_PURPLE, 255, 255);
+  CRGB cyan = CHSV( HUE_BLUE, 255, 255);
+  CRGB green  = CHSV( HUE_GREEN, 255, 255);
+  CRGB yellow = CHSV( HUE_YELLOW, 255, 255);
+  CRGB orange = CHSV( HUE_ORANGE, 255, 255);
+  CRGB red = CHSV( HUE_RED, 255, 255);
+  CRGB black  = CRGB::Black;
+
+  currentPalette = CRGBPalette16(
+                     violet,  violet,  indigo,  indigo,
+                     cyan, cyan, green,  green,
+                     yellow,  yellow,  orange,  orange,
+                     red, red, violet,  violet );
+}
