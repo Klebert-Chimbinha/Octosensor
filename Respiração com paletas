@@ -8,7 +8,7 @@
 unsigned long int respira = 0;
 int r = 0;
 int e = NUM_LEDS - 1;
-int estado = 0;
+int estado = 1;
 
 CRGB leds[NUM_LEDS];
 
@@ -52,7 +52,8 @@ void Respirando( int inspira, int expira) {
     if(r == NUM_LEDS){
       if(millis() - respira >= expira){
         leds[e] = CRGB::Black;
-        blur1d(leds, NUM_LEDS, 15);
+        //blur1d(leds, NUM_LEDS, 15);
+        fadeToBlackBy(leds, NUM_LEDS, 24);
         FastLED.show();
         respira += expira;
         e -= 1;
@@ -74,6 +75,7 @@ void Piscalerta( int inspira, int expira) {
       }
     if(millis() - respira >= expira){
         FastLED.clear();
+        //fadeToBlackBy(leds, NUM_LEDS, 170);
         FastLED.show();
         respira += expira;
         e -= 1;
@@ -88,7 +90,8 @@ void Piscalerta( int inspira, int expira) {
       }
       }
       if(r == NUM_LEDS and e == 0){
-      FastLED.clear();
+      //FastLED.clear();
+      fadeToBlackBy(leds, NUM_LEDS, 64);
         FastLED.show();
         e = NUM_LEDS - 1;
         r = 0;
